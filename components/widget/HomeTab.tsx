@@ -77,6 +77,7 @@ export function HomeTab({ brandSettings, onStartChat }: HomeTabProps) {
                     className="w-9 h-9 rounded-full border-2 border-black/20 bg-white/10 overflow-hidden flex items-center justify-center"
                   >
                     {a.img ? (
+                      // eslint-disable-next-line @next/next/no-img-element
                       <img src={a.img} alt="agent" className="w-full h-full object-cover" />
                     ) : (
                       <span className="text-xs">👤</span>
