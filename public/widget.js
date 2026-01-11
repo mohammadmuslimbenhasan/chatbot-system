@@ -4,6 +4,10 @@
 
   const WIDGET_BASE_URL = window.CHATBOT_WIDGET_URL || window.location.origin;
 
+  // ✅ ADDED: chat icon image URL
+  const CHAT_ICON =
+    "https://downloads.intercomcdn.com/i/o/qmraeqj3/830340/dfbf63338e4c5a4065703c74281d/38258c6b7facc7e1b605287ea03dd332.png";
+
   const styles = `
     #chatbot-widget-container {
       position: fixed;
@@ -43,27 +47,33 @@
       color: white;
     }
 
+    /* ✅ ADDED: image icon styling */
+    #chatbot-widget-button img.chatbot-widget-icon {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      pointer-events: none;
+    }
+
     #chatbot-widget-button.open {
       background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
     }
 
-   #chatbot-widget-iframe-wrapper {
-  position: fixed;
-  bottom: 100px;
-  right: 24px;
-
-  /* ✅ responsive size on PC */
-  width: min(420px, calc(100vw - 48px));
-  height: min(720px, calc(100vh - 140px));   /* grows with screen, but never exceeds viewport */
-
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
-  display: none;
-  z-index: 999999;
-  background: white;
-}
-
+    #chatbot-widget-iframe-wrapper {
+      position: fixed;
+      bottom: 100px;
+      right: 24px;
+      width: 350px;
+      height: calc(100vh - 160px);
+      max-width: calc(100vw - 48px);
+      max-height: 750px;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
+      display: none;
+      z-index: 999999;
+      background: white;
+    }
 
     #chatbot-widget-iframe-wrapper.open {
       display: block;
@@ -164,13 +174,10 @@
   const button = document.createElement('button');
   button.id = 'chatbot-widget-button';
   button.setAttribute('aria-label', 'Open chat');
+
+  // ✅ UPDATED: initial icon (image instead of SVG)
   button.innerHTML = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 3 .97 4.29L2 22l5.71-.97C9 21.64 10.46 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.38 0-2.68-.28-3.88-.78l-.28-.12-2.93.5.5-2.93-.12-.28C4.78 14.68 4.5 13.38 4.5 12c0-4.14 3.36-7.5 7.5-7.5s7.5 3.36 7.5 7.5-3.36 7.5-7.5 7.5z"/>
-      <circle cx="8.5" cy="12" r="1.25"/>
-      <circle cx="12" cy="12" r="1.25"/>
-      <circle cx="15.5" cy="12" r="1.25"/>
-    </svg>
+    <img src="${CHAT_ICON}" alt="Chat" class="chatbot-widget-icon" />
     <span class="chatbot-pulse"></span>
   `;
 
@@ -190,18 +197,17 @@
     if (isOpen) {
       iframeWrapper.classList.remove('open');
       button.classList.remove('open');
+
+      // ✅ UPDATED: restore image icon
       button.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 3 .97 4.29L2 22l5.71-.97C9 21.64 10.46 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.38 0-2.68-.28-3.88-.78l-.28-.12-2.93.5.5-2.93-.12-.28C4.78 14.68 4.5 13.38 4.5 12c0-4.14 3.36-7.5 7.5-7.5s7.5 3.36 7.5 7.5-3.36 7.5-7.5 7.5z"/>
-          <circle cx="8.5" cy="12" r="1.25"/>
-          <circle cx="12" cy="12" r="1.25"/>
-          <circle cx="15.5" cy="12" r="1.25"/>
-        </svg>
+        <img src="${CHAT_ICON}" alt="Chat" class="chatbot-widget-icon" />
         <span class="chatbot-pulse"></span>
       `;
     } else {
       iframeWrapper.classList.add('open');
       button.classList.add('open');
+
+      // ❌ unchanged close icon (SVG)
       button.innerHTML = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
           <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
@@ -218,13 +224,10 @@
     if (event.data === 'chatbot-close') {
       iframeWrapper.classList.remove('open');
       button.classList.remove('open');
+
+      // ✅ UPDATED: restore image icon
       button.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 3 .97 4.29L2 22l5.71-.97C9 21.64 10.46 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.38 0-2.68-.28-3.88-.78l-.28-.12-2.93.5.5-2.93-.12-.28C4.78 14.68 4.5 13.38 4.5 12c0-4.14 3.36-7.5 7.5-7.5s7.5 3.36 7.5 7.5-3.36 7.5-7.5 7.5z"/>
-          <circle cx="8.5" cy="12" r="1.25"/>
-          <circle cx="12" cy="12" r="1.25"/>
-          <circle cx="15.5" cy="12" r="1.25"/>
-        </svg>
+        <img src="${CHAT_ICON}" alt="Chat" class="chatbot-widget-icon" />
         <span class="chatbot-pulse"></span>
       `;
     }
