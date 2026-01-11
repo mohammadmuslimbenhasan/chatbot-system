@@ -2,9 +2,8 @@
   if (window.ChatbotWidgetLoaded) return;
   window.ChatbotWidgetLoaded = true;
 
-  const WIDGET_BASE_URL = window.CHATBOT_WIDGET_URL || window.location.origin;
+  const WIDGET_BASE_URL = (window.CHATBOT_WIDGET_URL || window.location.origin).replace(/\/$/, "");
 
-  // ✅ ADDED: chat icon image URL
   const CHAT_ICON =
     "https://downloads.intercomcdn.com/i/o/qmraeqj3/830340/dfbf63338e4c5a4065703c74281d/38258c6b7facc7e1b605287ea03dd332.png";
 
@@ -47,7 +46,6 @@
       color: white;
     }
 
-    /* ✅ ADDED: image icon styling */
     #chatbot-widget-button img.chatbot-widget-icon {
       width: 32px;
       height: 32px;
@@ -59,25 +57,23 @@
       background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
     }
 
-   #chatbot-widget-iframe-wrapper {
-  position: fixed;
-  right: 24px;
-  bottom: 96px;
+    /* ✅ Desktop card wrapper (matches your desired style) */
+    #chatbot-widget-iframe-wrapper {
+      position: fixed;
+      right: 24px;
+      bottom: 96px;
+      z-index: 999999;
 
-  /* ✅ Smaller and nicer on PC */
-  width: min(420px, calc(100vw - 48px));
-  height: min(560px, calc(80vh));   /* <= smaller than before */
+      width: min(420px, calc(100vw - 48px));
+      height: min(640px, 80vh);
 
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
-  display: none;
-  z-index: 999999;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
 
-  /* ✅ don’t paint big white box */
-  background: transparent;
-}
-
+      display: none;
+      background: transparent;
+    }
 
     #chatbot-widget-iframe-wrapper.open {
       display: block;
@@ -95,25 +91,17 @@
       }
     }
 
-   #chatbot-widget-iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  background: transparent; /* ✅ */
-  border-radius: 24px;
-}
+    #chatbot-widget-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 28px;
+      background: transparent;
+      display: block;
+    }
 
+    /* ✅ Tablet / mobile */
     @media (max-width: 768px) {
-      #chatbot-widget-iframe-wrapper {
-        width: calc(100vw - 24px);
-        height: calc(100vh - 120px);
-        right: 12px;
-        bottom: 90px;
-        border-radius: 20px;
-        max-width: none;
-        max-height: none;
-      }
-
       #chatbot-widget-container {
         bottom: 16px;
         right: 16px;
@@ -128,8 +116,21 @@
         width: 26px;
         height: 26px;
       }
+
+      #chatbot-widget-iframe-wrapper {
+        right: 12px;
+        bottom: 86px;
+        width: calc(100vw - 24px);
+        height: calc(100vh - 120px);
+        border-radius: 24px;
+      }
+
+      #chatbot-widget-iframe {
+        border-radius: 24px;
+      }
     }
 
+    /* ✅ Small mobile fullscreen */
     @media (max-width: 480px) {
       #chatbot-widget-iframe-wrapper {
         width: 100vw;
@@ -157,66 +158,60 @@
     }
 
     @keyframes pulse {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-      50% {
-        transform: scale(1.3);
-        opacity: 0.6;
-      }
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.6; }
     }
   `;
 
-  const styleSheet = document.createElement('style');
+  const styleSheet = document.createElement("style");
   styleSheet.textContent = styles;
   document.head.appendChild(styleSheet);
 
-  const container = document.createElement('div');
-  container.id = 'chatbot-widget-container';
+  const container = document.createElement("div");
+  container.id = "chatbot-widget-container";
 
-  const button = document.createElement('button');
-  button.id = 'chatbot-widget-button';
-  button.setAttribute('aria-label', 'Open chat');
+  const button = document.createElement("button");
+  button.id = "chatbot-widget-button";
+  button.type = "button";
+  button.setAttribute("aria-label", "Open chat");
 
-  // ✅ UPDATED: initial icon (image instead of SVG)
-  button.innerHTML = `
-    <img src="${CHAT_ICON}" alt="Chat" class="chatbot-widget-icon" />
-    <span class="chatbot-pulse"></span>
-  `;
+  function setButtonClosed() {
+    button.classList.remove("open");
+    button.innerHTML = `
+      <img src="${CHAT_ICON}" alt="Chat" class="chatbot-widget-icon" />
+      <span class="chatbot-pulse"></span>
+    `;
+  }
 
-  const iframeWrapper = document.createElement('div');
-  iframeWrapper.id = 'chatbot-widget-iframe-wrapper';
+  function setButtonOpen() {
+    button.classList.add("open");
+    button.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+      </svg>
+    `;
+  }
 
-  const iframe = document.createElement('iframe');
-  iframe.id = 'chatbot-widget-iframe';
+  setButtonClosed();
+
+  const iframeWrapper = document.createElement("div");
+  iframeWrapper.id = "chatbot-widget-iframe-wrapper";
+
+  const iframe = document.createElement("iframe");
+  iframe.id = "chatbot-widget-iframe";
   iframe.src = `${WIDGET_BASE_URL}/embed`;
-  iframe.allow = 'microphone; camera';
-
+  iframe.allow = "microphone; camera";
   iframeWrapper.appendChild(iframe);
 
-  button.addEventListener('click', function () {
-    const isOpen = iframeWrapper.classList.contains('open');
+  button.addEventListener("click", function () {
+    const isOpen = iframeWrapper.classList.contains("open");
 
     if (isOpen) {
-      iframeWrapper.classList.remove('open');
-      button.classList.remove('open');
-
-      // ✅ UPDATED: restore image icon
-      button.innerHTML = `
-        <img src="${CHAT_ICON}" alt="Chat" class="chatbot-widget-icon" />
-        <span class="chatbot-pulse"></span>
-      `;
+      iframeWrapper.classList.remove("open");
+      setButtonClosed();
     } else {
-      iframeWrapper.classList.add('open');
-      button.classList.add('open');
-
-      // ❌ unchanged close icon (SVG)
-      button.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-        </svg>
-      `;
+      iframeWrapper.classList.add("open");
+      setButtonOpen();
     }
   });
 
@@ -224,16 +219,10 @@
   container.appendChild(iframeWrapper);
   document.body.appendChild(container);
 
-  window.addEventListener('message', function (event) {
-    if (event.data === 'chatbot-close') {
-      iframeWrapper.classList.remove('open');
-      button.classList.remove('open');
-
-      // ✅ UPDATED: restore image icon
-      button.innerHTML = `
-        <img src="${CHAT_ICON}" alt="Chat" class="chatbot-widget-icon" />
-        <span class="chatbot-pulse"></span>
-      `;
+  window.addEventListener("message", function (event) {
+    if (event.data === "chatbot-close") {
+      iframeWrapper.classList.remove("open");
+      setButtonClosed();
     }
   });
 })();
