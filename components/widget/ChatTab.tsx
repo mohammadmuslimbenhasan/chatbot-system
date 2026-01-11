@@ -47,7 +47,6 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Safe fallbacks
   const primaryColor = brandSettings.primary_color ?? '#1e3a8a';
   const brandName = brandSettings.brand_name ?? 'Brand';
   const chatToAgentText =
@@ -70,7 +69,6 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
-  // Check if this is the first customer message
   useEffect(() => {
     const customerMessages = messages.filter(m => m.sender_type === 'customer');
     setIsFirstMessage(customerMessages.length === 0);
@@ -205,21 +203,16 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
 
     pushOptimisticCustomerMessage(content);
 
-    // Send customer message
     await chatService.sendMessage(chatId, content, 'customer');
 
-    // Auto-reply with greeting and show presets for first message or any message
     setIsTyping(true);
     
-    // Small delay to simulate typing
     setTimeout(async () => {
-      // Get auto-reply message
       const autoReply = await chatService.getAutoReplyMessage();
       await chatService.sendMessage(chatId, autoReply, 'bot');
       
       setIsTyping(false);
       
-      // Always show presets after auto-reply
       const root = await chatService.getPresets(null);
       if (root.length > 0) {
         setPresets(root);
@@ -273,7 +266,6 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
         presetPath: nextPath,
       });
     } else {
-      // No child presets, show root presets again
       const root = await chatService.getPresets(null);
       if (root.length > 0) {
         setPresets(root);
@@ -315,51 +307,51 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      {/* Header - Fixed */}
+      {/* Header */}
       <div
-        className="flex-shrink-0 flex items-center justify-between px-3 sm:px-4 py-2 sm:py-3 text-white"
+        className="flex-shrink-0 flex items-center justify-between px-2.5 xs:px-3 py-2 text-white"
         style={{
           background: `linear-gradient(135deg, ${primaryColor} 0%, #0f172a 100%)`,
         }}
       >
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <div className="flex items-center gap-1.5 xs:gap-2 min-w-0">
           <button onClick={onBack} className="text-white/90 hover:text-white flex-shrink-0">
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-4 h-4 xs:w-5 xs:h-5" />
           </button>
 
-          <div className="flex items-center gap-1 flex-shrink-0">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 flex items-center justify-center text-sm">👤</div>
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 flex items-center justify-center -ml-2 text-sm">👤</div>
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 flex items-center justify-center -ml-2 text-sm">👤</div>
+          <div className="flex items-center gap-0.5 flex-shrink-0">
+            <div className="w-6 h-6 xs:w-7 xs:h-7 rounded-full bg-white/20 flex items-center justify-center text-[10px] xs:text-xs">👤</div>
+            <div className="w-6 h-6 xs:w-7 xs:h-7 rounded-full bg-white/20 flex items-center justify-center -ml-1.5 text-[10px] xs:text-xs">👤</div>
+            <div className="w-6 h-6 xs:w-7 xs:h-7 rounded-full bg-white/20 flex items-center justify-center -ml-1.5 text-[10px] xs:text-xs">👤</div>
           </div>
 
           <div className="min-w-0">
-            <div className="font-semibold text-xs sm:text-sm truncate">{brandName}</div>
-            <div className="text-[10px] sm:text-xs text-white/70 truncate">সাধারণত সক্রিয় থাকে</div>
+            <div className="font-semibold text-[10px] xs:text-xs truncate">{brandName}</div>
+            <div className="text-[8px] xs:text-[10px] text-white/70 truncate">সাধারণত সক্রিয় থাকে</div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+        <div className="flex items-center gap-1.5 xs:gap-2 flex-shrink-0">
           <button className="text-white/90 hover:text-white">
-            <MoreVertical className="w-4 h-4 sm:w-5 sm:h-5" />
+            <MoreVertical className="w-3.5 h-3.5 xs:w-4 xs:h-4" />
           </button>
           {onClose && (
             <button onClick={onClose} className="text-white/90 hover:text-white">
-              <X className="w-4 h-4 sm:w-5 sm:h-5" />
+              <X className="w-3.5 h-3.5 xs:w-4 xs:h-4" />
             </button>
           )}
         </div>
       </div>
 
-      {/* Messages Container - Scrollable */}
+      {/* Messages */}
       <div 
         ref={messagesContainerRef}
-        className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gray-50"
+        className="flex-1 min-h-0 overflow-y-auto p-2.5 xs:p-3 space-y-2 xs:space-y-3 bg-gray-50"
       >
         {messages.length === 0 && (
-          <div className="text-center py-6 sm:py-8">
-            <div className="text-3xl sm:text-4xl mb-2">👋</div>
-            <p className="text-gray-500 text-xs sm:text-sm">আপনার প্রশ্ন জিজ্ঞাসা করুন</p>
+          <div className="text-center py-4 xs:py-6">
+            <div className="text-2xl xs:text-3xl mb-1.5">👋</div>
+            <p className="text-gray-500 text-[10px] xs:text-xs">আপনার প্রশ্ন জিজ্ঞাসা করুন</p>
           </div>
         )}
 
@@ -369,7 +361,7 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
             className={`flex ${message.sender_type === 'customer' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[80%] sm:max-w-[75%] rounded-2xl px-3 sm:px-4 py-2 ${
+              className={`max-w-[82%] rounded-2xl px-2.5 xs:px-3 py-1.5 xs:py-2 ${
                 message.sender_type === 'customer'
                   ? 'bg-blue-600 text-white rounded-br-none'
                   : 'bg-white text-gray-800 rounded-bl-none shadow-sm'
@@ -380,7 +372,7 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
                 <img
                   src={message.metadata.file_url}
                   alt="Attachment"
-                  className="rounded-lg mb-2 max-w-full"
+                  className="rounded-lg mb-1.5 max-w-full"
                 />
               )}
 
@@ -389,19 +381,19 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
                   href={message.metadata.file_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 mb-2 hover:underline"
+                  className="flex items-center gap-1.5 mb-1.5 hover:underline"
                 >
-                  <FileText className="w-4 h-4 flex-shrink-0" />
-                  <span className="text-xs sm:text-sm truncate">{message.content}</span>
+                  <FileText className="w-3.5 h-3.5 flex-shrink-0" />
+                  <span className="text-[10px] xs:text-xs truncate">{message.content}</span>
                 </a>
               )}
 
               {message.message_type === 'text' && (
-                <p className="text-xs sm:text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                <p className="text-[11px] xs:text-xs whitespace-pre-wrap break-words">{message.content}</p>
               )}
 
               <div
-                className={`text-[10px] sm:text-xs mt-1 ${
+                className={`text-[8px] xs:text-[10px] mt-0.5 ${
                   message.sender_type === 'customer' ? 'text-blue-100' : 'text-gray-400'
                 }`}
               >
@@ -413,25 +405,24 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
 
         {isTyping && (
           <div className="flex justify-start">
-            <div className="bg-white rounded-2xl rounded-bl-none px-3 sm:px-4 py-2 sm:py-3 shadow-sm">
+            <div className="bg-white rounded-2xl rounded-bl-none px-2.5 xs:px-3 py-2 shadow-sm">
               <div className="flex gap-1">
-                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
-                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+                <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
+                <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                <div className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce [animation-delay:0.4s]"></div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Always show presets if available */}
         {showPresets && presets.length > 0 && (
-          <div className="flex flex-col items-end gap-2 pt-2">
-            <div className="flex flex-wrap justify-end gap-1.5 sm:gap-2 max-w-[90%] sm:max-w-[85%]">
+          <div className="flex flex-col items-end gap-1.5 pt-1">
+            <div className="flex flex-wrap justify-end gap-1 xs:gap-1.5 max-w-[90%]">
               {presets.map((preset) => (
                 <button
                   key={preset.id}
                   onClick={() => handlePresetClick(preset)}
-                  className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 shadow-sm text-xs sm:text-sm font-medium text-gray-800 hover:bg-gray-50 transition-colors"
+                  className="px-2.5 xs:px-3 py-1 xs:py-1.5 rounded-full bg-white border border-gray-200 shadow-sm text-[10px] xs:text-xs font-medium text-gray-800 hover:bg-gray-50 transition-colors"
                 >
                   {preset.button_label}
                 </button>
@@ -443,39 +434,33 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input Area - Fixed at bottom */}
-      <div className="flex-shrink-0 border-t bg-white p-2 sm:p-4">
-        <div className="flex items-center gap-2">
-          <div className="flex-1 flex items-center gap-1 sm:gap-2 bg-gray-100 rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
+      {/* Input */}
+      <div className="flex-shrink-0 border-t bg-white p-1.5 xs:p-2">
+        <div className="flex items-center gap-1.5 xs:gap-2">
+          <div className="flex-1 flex items-center gap-1 bg-gray-100 rounded-full px-2.5 xs:px-3 py-1 xs:py-1.5">
             <Input
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
               placeholder="মেসেজ..."
-              className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-xs sm:text-sm h-auto py-0"
+              className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-[11px] xs:text-xs h-auto py-0"
             />
             <button
               onClick={() => fileInputRef.current?.click()}
               className="text-gray-500 hover:text-blue-600 flex-shrink-0"
             >
-              <Paperclip className="w-4 h-4 sm:w-5 sm:h-5" />
-            </button>
-            <button className="text-gray-500 hover:text-blue-600 flex-shrink-0 hidden sm:block">
-              <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
-            </button>
-            <button className="text-gray-500 hover:text-blue-600 flex-shrink-0 hidden sm:block">
-              <Smile className="w-4 h-4 sm:w-5 sm:h-5" />
+              <Paperclip className="w-3.5 h-3.5 xs:w-4 xs:h-4" />
             </button>
           </div>
 
           <button
             onClick={handleSendMessage}
             disabled={!inputValue.trim()}
-            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 transition-colors"
+            className="w-8 h-8 xs:w-9 xs:h-9 rounded-full flex items-center justify-center text-white disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 transition-colors"
             style={{ backgroundColor: primaryColor }}
           >
-            <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+            <Send className="w-3.5 h-3.5 xs:w-4 xs:h-4" />
           </button>
         </div>
       </div>
