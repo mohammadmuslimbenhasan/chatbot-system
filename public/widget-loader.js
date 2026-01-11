@@ -22,7 +22,7 @@
   iframe.style.border = "0";
   iframe.style.borderRadius = "18px";
   iframe.style.zIndex = "2147483647";
-  iframe.allow = "clipboard-write";
+  
 
   document.body.appendChild(iframe);
 })();
