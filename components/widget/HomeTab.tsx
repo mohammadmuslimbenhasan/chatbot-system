@@ -60,7 +60,7 @@ export function HomeTab({ brandSettings, onStartChat, onRecentMessage, onClose }
   };
 
   return (
-    <div className="w-full h-full flex flex-col overflow-hidden rounded-2xl relative">
+    <div className="w-full h-[80%] flex flex-col overflow-hidden rounded-2xl relative">
       {/* Gradient Background */}
       <div 
         className="w-[400px] rounded-[28px] overflow-hidden border border-black/10 shadow-lg flex flex-col pb-0"
