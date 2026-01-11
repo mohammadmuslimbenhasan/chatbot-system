@@ -57,44 +57,45 @@
       background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
     }
 
-    /* ✅ Desktop: NO outer frame */
-    #chatbot-widget-iframe-wrapper {
-      position: fixed;
-      right: 24px;
-      bottom: 96px;
-      z-index: 999999;
+    /* ✅ Desktop: frame + iframe perfectly matched */
+#chatbot-widget-iframe-wrapper {
+  position: fixed;
+  right: 24px;
+  bottom: 96px;
+  z-index: 999999;
 
-      width: 420px;
-      height: 600px;
-      max-width: calc(100vw - 48px);
-      max-height: calc(100vh - 140px);
+  width: 420px;
+  height: 600px;
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 140px);
 
-      border-radius: 0 !important;
-      box-shadow: none !important;
-      background: transparent !important;
-      overflow: visible !important;
+  border-radius: 28px;
+  overflow: hidden;                 /* ✅ important */
+  background: #ffffff;              /* ✅ frame background */
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
 
-      display: none;
-    }
+  padding: 0;                       /* ✅ no inner padding */
+  display: none;
+}
 
-    #chatbot-widget-iframe-wrapper.open {
-      display: block;
-      animation: slideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+   #chatbot-widget-iframe-wrapper.open {
+  display: block;
+  animation: slideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
     @keyframes slideUp {
       from { opacity: 0; transform: translateY(30px) scale(0.95); }
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    #chatbot-widget-iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      border-radius: 0 !important;
-      background: transparent !important;
-      display: block;
-    }
+   #chatbot-widget-iframe {
+  display: block;                   /* ✅ removes bottom gap */
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  border-radius: 0;                 /* ✅ wrapper clips it */
+}
 
     /* ✅ Tablet / mobile: wrapper is allowed */
     @media (max-width: 768px) {
