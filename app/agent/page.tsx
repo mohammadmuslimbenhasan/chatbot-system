@@ -56,6 +56,7 @@ export default function AgentWorkspace() {
       });
       return unsubscribe;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile]);
 
   useEffect(() => {
