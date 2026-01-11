@@ -63,18 +63,11 @@ export function HomeTab({ brandSettings, onStartChat, onRecentMessage, onClose }
     <div className="w-full h-full flex flex-col overflow-hidden rounded-2xl relative">
       {/* Gradient Background */}
       <div 
-        className="absolute inset-0"
+        className="w-[400px] rounded-[28px] overflow-hidden border border-black/10 shadow-lg flex flex-col pb-0"
         style={{
-          background: `linear-gradient(180deg, 
-            ${gradFrom} 0%, 
-            ${gradFrom} 45%, 
-            ${gradFrom}00 50%, 
-            #ffffff00 50%, 
-            #ffffff 55%, 
-            #ffffff 100%
-          )`,
+          height: 700,
+          background: `linear-gradient(180deg, ${gradFrom} 0%, ${gradTo} 55%, ${gradTo} 100%)`,
         }}
-      />
       
       {/* Content */}
       <div className="relative z-10 flex-1 min-h-0 overflow-y-auto">
