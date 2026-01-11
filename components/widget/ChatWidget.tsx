@@ -88,15 +88,8 @@ export function ChatWidget({ onClose, embedded = false }: ChatWidgetProps) {
   };
 
   return (
-    <div 
-  className={`
-    relative flex flex-col bg-white overflow-hidden shadow-2xl rounded-2xl min-h-0
-    ${embedded 
-      ? 'w-[calc(100%-16px)] h-[calc(100%-16px)] max-w-[380px] max-h-[520px] xs:max-h-[560px] sm:max-w-[400px] sm:max-h-[640px] md:max-h-[680px]' 
-      : 'w-[calc(100vw-24px)] h-[calc(100vh-100px)] max-w-[340px] max-h-[480px] xs:max-w-[360px] xs:max-h-[520px] sm:max-w-[380px] sm:max-h-[600px] md:max-w-[400px] md:max-h-[680px]'
-    }
-  `}
->
+    <div className={ relative flex flex-col bg-white overflow-hidden shadow-2xl rounded-2xl 
+      ${embedded ? 'w-[calc(100%-16px)] h-[calc(100%-16px)] max-w-[380px] max-h-[520px] xs:max-h-[560px] sm:max-w-[400px] sm:max-h-[640px] md:max-h-[680px]' : 'w-[calc(100vw-24px)] h-[calc(100vh-100px)] max-w-[340px] max-h-[480px] xs:max-w-[360px] xs:max-h-[520px] sm:max-w-[380px] sm:max-h-[600px] md:max-w-[400px] md:max-h-[680px]' } } >
       {activeTab === 'home' ? (
         <HomeTab 
           brandSettings={brandSettings} 
