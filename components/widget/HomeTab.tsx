@@ -78,7 +78,7 @@ export function HomeTab({ brandSettings, onStartChat, onRecentMessage, onClose }
         {/* Scrollable content area */}
         <div className="relative z-10 flex-1 min-h-0 overflow-y-auto px-3 xs:px-4">
           {/* Give top space so header/logo never cuts */}
-          <div className="flex flex-col gap-3 xs:gap-4 py-3 xs:py-4 sm:py-5">
+         <div className="min-h-full flex flex-col justify-between py-3 xs:py-4 sm:py-5">
 
             {/* Top Section */}
             <div className="flex items-center justify-between text-white">
