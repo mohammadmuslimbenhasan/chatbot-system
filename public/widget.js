@@ -60,22 +60,19 @@
     /* ✅ Desktop: frame + iframe perfectly matched */
 #chatbot-widget-iframe-wrapper {
   position: fixed;
+  bottom: 100px;
   right: 24px;
-  bottom: 96px;
-  z-index: 999999;
 
-  width: 420px;
-  height: 700px;
-  max-width: calc(100vw - 48px);
-  max-height: calc(100vh - 140px);
+  /* ✅ responsive size on PC */
+  width: min(420px, calc(100vw - 48px));
+  height: min(720px, calc(100vh - 140px));   /* grows with screen, but never exceeds viewport */
 
-  border-radius: 28px;
-  overflow: hidden;                 /* ✅ important */
-  background: #ffffff;              /* ✅ frame background */
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
-
-  padding: 0;                       /* ✅ no inner padding */
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
   display: none;
+  z-index: 999999;
+  background: white;
 }
 
    #chatbot-widget-iframe-wrapper.open {
