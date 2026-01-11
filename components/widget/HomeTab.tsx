@@ -49,8 +49,10 @@ export function HomeTab({ brandSettings, onStartChat, onRecentMessage, onClose }
   };
 
   const primaryColor = brandSettings.primary_color || '#1e3a8a';
+
   const gradFrom = brandSettings.home_gradient_from || '#1f2d3a';
-  const gradTo = brandSettings.home_gradient_to || gradFrom; // ✅ add this
+  const gradFromTransparent =
+    gradFrom.startsWith('#') && gradFrom.length === 7 ? `${gradFrom}00` : 'rgba(31,45,58,0)';
 
   const handleRecentMessageClick = () => {
     if (onRecentMessage) {
@@ -64,18 +66,18 @@ export function HomeTab({ brandSettings, onStartChat, onRecentMessage, onClose }
     <div className="w-full h-full flex flex-col overflow-hidden rounded-2xl relative">
       {/* Gradient Background + Frame */}
       <div
-  className="w-full h-full rounded-[28px] overflow-hidden border border-black/10 shadow-lg flex flex-col pb-0"
-  style={{
-    background: `linear-gradient(180deg,
-      ${gradFrom} 0%,
-      ${gradFrom} 45%,
-      ${gradFromTransparent} 52%,
-      #ffffff00 52%,
-      #ffffff 60%,
-      #ffffff 100%
-    )`,
-  }}
->
+        className="w-full h-full rounded-[28px] overflow-hidden border border-black/10 shadow-lg flex flex-col pb-0"
+        style={{
+          background: `linear-gradient(180deg,
+            ${gradFrom} 0%,
+            ${gradFrom} 45%,
+            ${gradFromTransparent} 52%,
+            #ffffff00 52%,
+            #ffffff 60%,
+            #ffffff 100%
+          )`,
+        }}
+      >
         {/* Content */}
         <div className="relative z-10 flex-1 min-h-0 overflow-y-auto">
           <div className="min-h-full flex flex-col justify-between px-3 xs:px-4 py-3 xs:py-4 sm:py-5">
