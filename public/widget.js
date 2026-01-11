@@ -93,7 +93,7 @@
 
     #chatbot-widget-iframe {
       width: 100%;
-      height: 100%;
+      height: 80%;
       border: none;
       background: white;
       border-radius: 24px;
