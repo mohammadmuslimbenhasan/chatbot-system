@@ -95,10 +95,14 @@ export function ChatWidget({ onClose, embedded = false }: ChatWidgetProps) {
       className={`
         relative flex flex-col bg-white overflow-hidden shadow-2xl
         ${embedded 
-          ? 'w-full h-full rounded-none' 
-          : 'w-full h-full sm:w-[400px] sm:max-w-[95vw] sm:h-[min(700px,90vh)] sm:rounded-3xl'
+          ? 'w-full h-full m-2 sm:m-3 md:m-4 rounded-2xl sm:rounded-3xl' 
+          : 'w-full h-full sm:w-[380px] md:w-[400px] sm:max-w-[calc(100vw-32px)] sm:h-[min(680px,calc(100vh-32px))] md:h-[min(700px,calc(100vh-32px))] rounded-2xl sm:rounded-3xl'
         }
       `}
+      style={{
+        maxHeight: embedded ? 'calc(100% - 16px)' : undefined,
+        margin: embedded ? undefined : undefined,
+      }}
     >
       {activeTab === 'home' ? (
         <HomeTab 
