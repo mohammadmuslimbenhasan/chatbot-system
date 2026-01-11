@@ -38,7 +38,6 @@ export function ChatWidget({ onClose, embedded = false }: ChatWidgetProps) {
 
   useEffect(() => {
     loadBrandSettings();
-    // Check for existing chat on mount
     const existingChatId = localStorage.getItem('chatbot_chat_id');
     if (existingChatId) {
       setChatId(existingChatId);
@@ -67,7 +66,6 @@ export function ChatWidget({ onClose, embedded = false }: ChatWidgetProps) {
     }
   };
 
-  // Handle recent message click - goes directly to chat/messages
   const handleRecentMessage = async () => {
     const existingChatId = localStorage.getItem('chatbot_chat_id');
 
@@ -77,7 +75,6 @@ export function ChatWidget({ onClose, embedded = false }: ChatWidgetProps) {
       return;
     }
 
-    // If no existing chat, create one and go to chat
     const chat = await chatService.createChat();
     if (chat) {
       setChatId(chat.id);
@@ -93,16 +90,12 @@ export function ChatWidget({ onClose, embedded = false }: ChatWidgetProps) {
   return (
     <div 
       className={`
-        relative flex flex-col bg-white overflow-hidden shadow-2xl
+        relative flex flex-col bg-white overflow-hidden shadow-2xl rounded-2xl
         ${embedded 
-          ? 'w-full h-full m-2 sm:m-3 md:m-4 rounded-2xl sm:rounded-3xl' 
-          : 'w-full h-full sm:w-[380px] md:w-[400px] sm:max-w-[calc(100vw-32px)] sm:h-[min(680px,calc(100vh-32px))] md:h-[min(700px,calc(100vh-32px))] rounded-2xl sm:rounded-3xl'
+          ? 'w-[calc(100%-16px)] h-[calc(100%-16px)] max-w-[380px] max-h-[520px] xs:max-h-[560px] sm:max-w-[400px] sm:max-h-[640px] md:max-h-[680px]' 
+          : 'w-[calc(100vw-24px)] h-[calc(100vh-100px)] max-w-[340px] max-h-[480px] xs:max-w-[360px] xs:max-h-[520px] sm:max-w-[380px] sm:max-h-[600px] md:max-w-[400px] md:max-h-[680px]'
         }
       `}
-      style={{
-        maxHeight: embedded ? 'calc(100% - 16px)' : undefined,
-        margin: embedded ? undefined : undefined,
-      }}
     >
       {activeTab === 'home' ? (
         <HomeTab 
