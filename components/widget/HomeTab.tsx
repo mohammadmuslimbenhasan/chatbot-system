@@ -58,6 +58,7 @@ export function HomeTab({ brandSettings, onStartChat }: HomeTabProps) {
             <div className="flex items-center gap-2">
               <div className="w-11 h-11 rounded-xl bg-white/10 border border-white/15 overflow-hidden flex items-center justify-center">
                 {brandSettings.logo_url ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img src={brandSettings.logo_url} alt="logo" className="w-full h-full object-cover" />
                 ) : (
                   <span className="text-sm font-bold">
