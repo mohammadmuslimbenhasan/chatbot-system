@@ -4,6 +4,11 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   images: { unoptimized: true },
+  webpack: (config, { isServer }) => {
+    // Suppress Supabase realtime-js dynamic require warning
+    config.module.exprContextCritical = false;
+    return config;
+  },
 };
 
 module.exports = nextConfig;
