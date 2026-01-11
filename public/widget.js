@@ -47,21 +47,23 @@
       background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
     }
 
-    #chatbot-widget-iframe-wrapper {
-      position: fixed;
-      bottom: 100px;
-      right: 24px;
-      width: 350px;
-      height: calc(100vh - 160px);
-      max-width: calc(100vw - 48px);
-      max-height: 750px;
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
-      display: none;
-      z-index: 999999;
-      background: white;
-    }
+   #chatbot-widget-iframe-wrapper {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+
+  /* ✅ responsive size on PC */
+  width: min(420px, calc(100vw - 48px));
+  height: min(720px, calc(100vh - 140px));   /* grows with screen, but never exceeds viewport */
+
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
+  display: none;
+  z-index: 999999;
+  background: white;
+}
+
 
     #chatbot-widget-iframe-wrapper.open {
       display: block;
