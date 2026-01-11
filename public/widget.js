@@ -59,21 +59,25 @@
       background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
     }
 
-    #chatbot-widget-iframe-wrapper {
-      position: fixed;
-      bottom: 100px;
-      right: 24px;
-      width: 350px;
-      height: calc(100vh - 160px);
-      max-width: calc(100vw - 48px);
-      max-height: 750px;
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
-      display: none;
-      z-index: 999999;
-      background: white;
-    }
+   #chatbot-widget-iframe-wrapper {
+  position: fixed;
+  right: 24px;
+  bottom: 96px;
+
+  /* ✅ Smaller and nicer on PC */
+  width: min(420px, calc(100vw - 48px));
+  height: min(560px, calc(80vh));   /* <= smaller than before */
+
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
+  display: none;
+  z-index: 999999;
+
+  /* ✅ don’t paint big white box */
+  background: transparent;
+}
+
 
     #chatbot-widget-iframe-wrapper.open {
       display: block;
@@ -91,13 +95,13 @@
       }
     }
 
-    #chatbot-widget-iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      background: white;
-      border-radius: 24px;
-    }
+   #chatbot-widget-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent; /* ✅ */
+  border-radius: 24px;
+}
 
     @media (max-width: 768px) {
       #chatbot-widget-iframe-wrapper {
