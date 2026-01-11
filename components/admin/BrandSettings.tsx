@@ -185,6 +185,7 @@ export function BrandSettings() {
             <div className="flex items-center gap-3 flex-wrap">
               <Input type="file" accept="image/*" onChange={(e) => setLogoFile(e.target.files?.[0] || null)} />
               {settings.logo_url && (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img src={settings.logo_url} alt="logo" className="h-10 w-10 rounded-md object-cover border" />
               )}
               {logoFile && (
