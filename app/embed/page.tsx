@@ -10,7 +10,7 @@ export default function EmbedPage() {
   };
 
   return (
-    <div className="h-screen w-full bg-transparent">
+    <div className="h-screen h-[100dvh] w-full bg-transparent overflow-hidden">
       <ChatWidget embedded={true} onClose={handleClose} />
     </div>
   );
