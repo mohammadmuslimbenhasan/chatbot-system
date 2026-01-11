@@ -39,6 +39,7 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
   const [presets, setPresets] = useState<Preset[]>([]);
   const [currentPresetId, setCurrentPresetId] = useState<string | null>(null);
   const [showPresets, setShowPresets] = useState(true);
+  const [isFirstMessage, setIsFirstMessage] = useState(true);
 
   const [presetPath, setPresetPath] = useState<Array<{ id: string; label: string }>>([]);
 
@@ -56,6 +57,7 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
     if (!chatId) return;
 
     loadMessages();
+    loadRootPresets();
     restorePresetNavState(chatId);
 
     const unsubscribe = chatService.subscribeToMessages(chatId, handleNewMessage);
@@ -68,6 +70,12 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [messages]);
 
+  // Check if this is the first customer message
+  useEffect(() => {
+    const customerMessages = messages.filter(m => m.sender_type === 'customer');
+    setIsFirstMessage(customerMessages.length === 0);
+  }, [messages]);
+
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
       messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
@@ -78,6 +86,14 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
     if (!chatId) return;
     const msgs = await chatService.getMessages(chatId);
     setMessages(msgs);
+  };
+
+  const loadRootPresets = async () => {
+    const root = await chatService.getPresets(null);
+    if (root.length > 0) {
+      setPresets(root);
+      setShowPresets(true);
+    }
   };
 
   const savePresetNavState = (next: PresetNavState) => {
@@ -189,7 +205,30 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
 
     pushOptimisticCustomerMessage(content);
 
+    // Send customer message
     await chatService.sendMessage(chatId, content, 'customer');
+
+    // Auto-reply with greeting and show presets for first message or any message
+    setIsTyping(true);
+    
+    // Small delay to simulate typing
+    setTimeout(async () => {
+      // Get auto-reply message
+      const autoReply = await chatService.getAutoReplyMessage();
+      await chatService.sendMessage(chatId, autoReply, 'bot');
+      
+      setIsTyping(false);
+      
+      // Always show presets after auto-reply
+      const root = await chatService.getPresets(null);
+      if (root.length > 0) {
+        setPresets(root);
+        setCurrentPresetId(null);
+        setShowPresets(true);
+        setPresetPath([]);
+        savePresetNavState({ currentPresetId: null, showPresets: true, presetPath: [] });
+      }
+    }, 1000);
   };
 
   const handlePresetClick = async (preset: Preset) => {
@@ -234,13 +273,22 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
         presetPath: nextPath,
       });
     } else {
-      setShowPresets(false);
-
-      savePresetNavState({
-        currentPresetId: preset.id,
-        showPresets: false,
-        presetPath: nextPath,
-      });
+      // No child presets, show root presets again
+      const root = await chatService.getPresets(null);
+      if (root.length > 0) {
+        setPresets(root);
+        setCurrentPresetId(null);
+        setShowPresets(true);
+        setPresetPath([]);
+        savePresetNavState({ currentPresetId: null, showPresets: true, presetPath: [] });
+      } else {
+        setShowPresets(false);
+        savePresetNavState({
+          currentPresetId: preset.id,
+          showPresets: false,
+          presetPath: nextPath,
+        });
+      }
     }
   };
 
@@ -375,6 +423,7 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
           </div>
         )}
 
+        {/* Always show presets if available */}
         {showPresets && presets.length > 0 && (
           <div className="flex flex-col items-end gap-2 pt-2">
             <div className="flex flex-wrap justify-end gap-1.5 sm:gap-2 max-w-[90%] sm:max-w-[85%]">
