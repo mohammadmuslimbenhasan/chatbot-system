@@ -54,7 +54,7 @@
       width: 350px;
       height: calc(100vh - 160px);
       max-width: calc(100vw - 48px);
-      max-height: 650px;
+      max-height: 750px;
       border-radius: 24px;
       overflow: hidden;
       box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
