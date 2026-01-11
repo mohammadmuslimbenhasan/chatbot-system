@@ -55,33 +55,30 @@ export function HomeTab({ brandSettings, onStartChat, onRecentMessage, onClose }
     gradFrom.startsWith('#') && gradFrom.length === 7 ? `${gradFrom}00` : 'rgba(31,45,58,0)';
 
   const handleRecentMessageClick = () => {
-    if (onRecentMessage) {
-      onRecentMessage();
-    } else {
-      onStartChat();
-    }
+    if (onRecentMessage) onRecentMessage();
+    else onStartChat();
   };
 
   return (
-    <div className="w-full h-full flex flex-col overflow-hidden rounded-2xl relative">
-      {/* Gradient Background + Frame */}
+    <div className="w-full h-full flex flex-col overflow-hidden relative">
+      {/* Background (flexible) */}
       <div
-  className="w-full h-full flex flex-col pt-3"
-  style={{
-    background: `linear-gradient(180deg,
-      ${gradFrom} 0%,
-      ${gradFrom} 45%,
-      ${gradFromTransparent} 52%,
-      #ffffff00 52%,
-      #ffffff 60%,
-      #ffffff 100%
-    )`,
-  }}
->
-
-        {/* Content */}
-        <div className="relative z-10 flex-1 min-h-0 overflow-y-auto">
-          <div className="min-h-full flex flex-col justify-between px-3 xs:px-4 py-3 xs:py-4 sm:py-5">
+        className="w-full h-full flex flex-col pt-4 pb-2"
+        style={{
+          background: `linear-gradient(180deg,
+            ${gradFrom} 0%,
+            ${gradFrom} 55%,
+            ${gradFromTransparent} 62%,
+            #ffffff00 62%,
+            #ffffff 70%,
+            #ffffff 100%
+          )`,
+        }}
+      >
+        {/* Scrollable content area */}
+        <div className="relative z-10 flex-1 min-h-0 overflow-y-auto px-3 xs:px-4">
+          {/* Give top space so header/logo never cuts */}
+          <div className="min-h-full flex flex-col justify-between py-3 xs:py-4 sm:py-5">
 
             {/* Top Section */}
             <div className="flex items-center justify-between text-white">
@@ -195,9 +192,7 @@ export function HomeTab({ brandSettings, onStartChat, onRecentMessage, onClose }
                   </div>
                 </div>
 
-                {recentMessage.hasDot && (
-                  <div className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0 animate-pulse" />
-                )}
+                {recentMessage.hasDot && <div className="w-2 h-2 rounded-full bg-red-500 flex-shrink-0 animate-pulse" />}
               </div>
             </div>
 
