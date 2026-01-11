@@ -322,6 +322,7 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
               }`}
             >
               {message.message_type === 'image' && message.metadata?.file_url && (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img
                   src={message.metadata.file_url}
                   alt="Attachment"
