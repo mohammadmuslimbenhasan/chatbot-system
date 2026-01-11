@@ -38,6 +38,11 @@ export function ChatWidget({ onClose, embedded = false }: ChatWidgetProps) {
 
   useEffect(() => {
     loadBrandSettings();
+    // Check for existing chat on mount
+    const existingChatId = localStorage.getItem('chatbot_chat_id');
+    if (existingChatId) {
+      setChatId(existingChatId);
+    }
   }, []);
 
   const loadBrandSettings = async () => {
@@ -54,6 +59,25 @@ export function ChatWidget({ onClose, embedded = false }: ChatWidgetProps) {
       return;
     }
 
+    const chat = await chatService.createChat();
+    if (chat) {
+      setChatId(chat.id);
+      localStorage.setItem('chatbot_chat_id', chat.id);
+      setActiveTab('chat');
+    }
+  };
+
+  // Handle recent message click - goes directly to chat/messages
+  const handleRecentMessage = async () => {
+    const existingChatId = localStorage.getItem('chatbot_chat_id');
+
+    if (existingChatId) {
+      setChatId(existingChatId);
+      setActiveTab('chat');
+      return;
+    }
+
+    // If no existing chat, create one and go to chat
     const chat = await chatService.createChat();
     if (chat) {
       setChatId(chat.id);
@@ -80,6 +104,7 @@ export function ChatWidget({ onClose, embedded = false }: ChatWidgetProps) {
         <HomeTab 
           brandSettings={brandSettings} 
           onStartChat={handleStartChat}
+          onRecentMessage={handleRecentMessage}
           onClose={onClose}
         />
       ) : (
