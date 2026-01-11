@@ -57,47 +57,47 @@
       background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
     }
 
-    /* ✅ Wrapper exists only after first click (created in JS) */
-    #chatbot-widget-iframe-wrapper {
-      position: fixed;
-      right: 24px;
-      bottom: 96px;
-      z-index: 999999;
+    /* ✅ Desktop: frame + iframe perfectly matched */
+#chatbot-widget-iframe-wrapper {
+  position: fixed;
+  right: 24px;
+  bottom: 96px;
+  z-index: 999999;
 
-      width: min(420px, calc(100vw - 48px));
-      height: min(600px, calc(100vh - 140px));
+  width: 420px;
+  height: 700px;
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 140px);
 
-      border-radius: 28px;
-      overflow: hidden;
+  border-radius: 28px;
+  overflow: hidden;                 /* ✅ important */
+  background: #ffffff;              /* ✅ frame background */
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
 
-      /* ✅ no extra frame color */
-      background: transparent;
+  padding: 0;                       /* ✅ no inner padding */
+  display: none;
+}
 
-      /* ✅ shadow only */
-      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
-
-      display: none;
-    }
-
-    #chatbot-widget-iframe-wrapper.open {
-      display: block;
-      animation: slideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+   #chatbot-widget-iframe-wrapper.open {
+  display: block;
+  animation: slideUp 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
     @keyframes slideUp {
       from { opacity: 0; transform: translateY(30px) scale(0.95); }
       to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    #chatbot-widget-iframe {
-      display: block;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      background: transparent;
-    }
+   #chatbot-widget-iframe {
+  display: block;                   /* ✅ removes bottom gap */
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  border-radius: 0;                 /* ✅ wrapper clips it */
+}
 
-    /* ✅ Tablet */
+    /* ✅ Tablet / mobile: wrapper is allowed */
     @media (max-width: 768px) {
       #chatbot-widget-container {
         bottom: 16px;
@@ -119,18 +119,31 @@
         bottom: 86px;
         width: calc(100vw - 24px);
         height: calc(100vh - 120px);
-        border-radius: 24px;
+
+        border-radius: 24px !important;
+        overflow: hidden !important;
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35) !important;
+        background: transparent !important;
+      }
+
+      #chatbot-widget-iframe {
+        border-radius: 24px !important;
+        background: transparent !important;
       }
     }
 
-    /* ✅ Mobile fullscreen (only after open — no wrapper before open) */
+    /* ✅ Small mobile fullscreen */
     @media (max-width: 480px) {
       #chatbot-widget-iframe-wrapper {
         width: 100vw;
         height: 100vh;
         right: 0;
         bottom: 0;
-        border-radius: 0;
+        border-radius: 0 !important;
+      }
+
+      #chatbot-widget-iframe {
+        border-radius: 0 !important;
       }
     }
 
@@ -183,49 +196,36 @@
 
   setButtonClosed();
 
-  // ✅ IMPORTANT: create wrapper+iframe ONLY when user opens
-  let iframeWrapper = null;
-  let iframe = null;
+  const iframeWrapper = document.createElement("div");
+  iframeWrapper.id = "chatbot-widget-iframe-wrapper";
 
-  function ensureIframeMounted() {
-    if (iframeWrapper) return;
-
-    iframeWrapper = document.createElement("div");
-    iframeWrapper.id = "chatbot-widget-iframe-wrapper";
-
-    iframe = document.createElement("iframe");
-    iframe.id = "chatbot-widget-iframe";
-    iframe.src = `${WIDGET_BASE_URL}/embed`;
-    iframe.allow = "microphone; camera";
-    iframe.referrerPolicy = "no-referrer-when-downgrade";
-
-    iframeWrapper.appendChild(iframe);
-    container.appendChild(iframeWrapper);
-  }
-
-  function openWidget() {
-    ensureIframeMounted();
-    iframeWrapper.classList.add("open");
-    setButtonOpen();
-  }
-
-  function closeWidget() {
-    if (iframeWrapper) iframeWrapper.classList.remove("open");
-    setButtonClosed();
-  }
+  const iframe = document.createElement("iframe");
+  iframe.id = "chatbot-widget-iframe";
+  iframe.src = `${WIDGET_BASE_URL}/embed`;
+  iframe.allow = "microphone; camera";
+  iframe.referrerPolicy = "no-referrer-when-downgrade";
+  iframeWrapper.appendChild(iframe);
 
   button.addEventListener("click", function () {
-    const isOpen = iframeWrapper && iframeWrapper.classList.contains("open");
-    if (isOpen) closeWidget();
-    else openWidget();
+    const isOpen = iframeWrapper.classList.contains("open");
+
+    if (isOpen) {
+      iframeWrapper.classList.remove("open");
+      setButtonClosed();
+    } else {
+      iframeWrapper.classList.add("open");
+      setButtonOpen();
+    }
   });
 
   container.appendChild(button);
+  container.appendChild(iframeWrapper);
   document.body.appendChild(container);
 
   window.addEventListener("message", function (event) {
     if (event && event.data === "chatbot-close") {
-      closeWidget();
+      iframeWrapper.classList.remove("open");
+      setButtonClosed();
     }
   });
 })();
