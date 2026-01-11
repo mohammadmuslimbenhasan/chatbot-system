@@ -306,7 +306,7 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
   };
 
   return (
-    <div className="flex flex-col h-full overflow-hidden">
+    <div className="flex flex-col h-full min-h-0 overflow-hidden">
       {/* Header */}
       <div
         className="flex-shrink-0 flex items-center justify-between px-2.5 xs:px-3 py-2 text-white"
