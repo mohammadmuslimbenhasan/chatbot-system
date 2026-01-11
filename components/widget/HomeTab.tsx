@@ -64,10 +64,11 @@ export function HomeTab({ brandSettings, onStartChat, onRecentMessage, onClose }
       {/* Gradient Background */}
       <div 
         className="w-[400px] rounded-[28px] overflow-hidden border border-black/10 shadow-lg flex flex-col pb-0"
-        style={{
-          height: 700,
-          background: `linear-gradient(180deg, ${gradFrom} 0%, ${gradTo} 55%, ${gradTo} 100%)`,
-        }}
+      style={{
+        height: "100%",
+        background: `linear-gradient(180deg, ${gradFrom} 0%, ${gradTo} 55%, ${gradTo} 100%)`,
+      }}
+    >
       
       {/* Content */}
       <div className="relative z-10 flex-1 min-h-0 overflow-y-auto">
