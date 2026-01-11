@@ -43,9 +43,10 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
   const [presetPath, setPresetPath] = useState<Array<{ id: string; label: string }>>([]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // ✅ SAFE FALLBACKS (fixes "string | undefined" errors)
+  // Safe fallbacks
   const primaryColor = brandSettings.primary_color ?? '#1e3a8a';
   const brandName = brandSettings.brand_name ?? 'Brand';
   const chatToAgentText =
@@ -68,7 +69,9 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
   }, [messages]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   };
 
   const loadMessages = async () => {
@@ -208,8 +211,6 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
       });
 
       await chatService.sendMessage(chatId, preset.button_label, 'customer');
-
-      // ✅ FIX: ensure string (no undefined)
       await chatService.sendMessage(chatId, chatToAgentText, 'bot');
       return;
     }
@@ -265,47 +266,52 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
+      {/* Header - Fixed */}
       <div
-        className="flex items-center justify-between px-4 py-3 text-white"
+        className="flex-shrink-0 flex items-center justify-between px-3 sm:px-4 py-2 sm:py-3 text-white"
         style={{
           background: `linear-gradient(135deg, ${primaryColor} 0%, #0f172a 100%)`,
         }}
       >
-        <div className="flex items-center gap-3">
-          <button onClick={onBack} className="text-white/90 hover:text-white">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <button onClick={onBack} className="text-white/90 hover:text-white flex-shrink-0">
             <ChevronLeft className="w-5 h-5" />
           </button>
 
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">👤</div>
-            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center -ml-3">👤</div>
-            <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center -ml-3">👤</div>
+          <div className="flex items-center gap-1 flex-shrink-0">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 flex items-center justify-center text-sm">👤</div>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 flex items-center justify-center -ml-2 text-sm">👤</div>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 flex items-center justify-center -ml-2 text-sm">👤</div>
           </div>
 
-          <div>
-            <div className="font-semibold text-sm">{brandName}</div>
-            <div className="text-xs text-white/70">সাধারণত সক্রিয় থাকে</div>
+          <div className="min-w-0">
+            <div className="font-semibold text-xs sm:text-sm truncate">{brandName}</div>
+            <div className="text-[10px] sm:text-xs text-white/70 truncate">সাধারণত সক্রিয় থাকে</div>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 ml-4">
+        <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
           <button className="text-white/90 hover:text-white">
-            <MoreVertical className="w-5 h-5" />
+            <MoreVertical className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
           {onClose && (
             <button onClick={onClose} className="text-white/90 hover:text-white">
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           )}
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50">
+      {/* Messages Container - Scrollable */}
+      <div 
+        ref={messagesContainerRef}
+        className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 bg-gray-50"
+      >
         {messages.length === 0 && (
-          <div className="text-center py-8">
-            <div className="text-4xl mb-2">👋</div>
-            <p className="text-gray-500 text-sm">আপনার প্রশ্ন জিজ্ঞাসা করুন</p>
+          <div className="text-center py-6 sm:py-8">
+            <div className="text-3xl sm:text-4xl mb-2">👋</div>
+            <p className="text-gray-500 text-xs sm:text-sm">আপনার প্রশ্ন জিজ্ঞাসা করুন</p>
           </div>
         )}
 
@@ -315,7 +321,7 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
             className={`flex ${message.sender_type === 'customer' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[75%] rounded-2xl px-4 py-2 ${
+              className={`max-w-[80%] sm:max-w-[75%] rounded-2xl px-3 sm:px-4 py-2 ${
                 message.sender_type === 'customer'
                   ? 'bg-blue-600 text-white rounded-br-none'
                   : 'bg-white text-gray-800 rounded-bl-none shadow-sm'
@@ -337,17 +343,17 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 mb-2 hover:underline"
                 >
-                  <FileText className="w-4 h-4" />
-                  <span className="text-sm">{message.content}</span>
+                  <FileText className="w-4 h-4 flex-shrink-0" />
+                  <span className="text-xs sm:text-sm truncate">{message.content}</span>
                 </a>
               )}
 
               {message.message_type === 'text' && (
-                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                <p className="text-xs sm:text-sm whitespace-pre-wrap break-words">{message.content}</p>
               )}
 
               <div
-                className={`text-xs mt-1 ${
+                className={`text-[10px] sm:text-xs mt-1 ${
                   message.sender_type === 'customer' ? 'text-blue-100' : 'text-gray-400'
                 }`}
               >
@@ -359,11 +365,11 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
 
         {isTyping && (
           <div className="flex justify-start">
-            <div className="bg-white rounded-2xl rounded-bl-none px-4 py-3 shadow-sm">
+            <div className="bg-white rounded-2xl rounded-bl-none px-3 sm:px-4 py-2 sm:py-3 shadow-sm">
               <div className="flex gap-1">
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
-                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:0.4s]"></div>
               </div>
             </div>
           </div>
@@ -371,12 +377,12 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
 
         {showPresets && presets.length > 0 && (
           <div className="flex flex-col items-end gap-2 pt-2">
-            <div className="flex flex-wrap justify-end gap-2 max-w-[85%]">
+            <div className="flex flex-wrap justify-end gap-1.5 sm:gap-2 max-w-[90%] sm:max-w-[85%]">
               {presets.map((preset) => (
                 <button
                   key={preset.id}
                   onClick={() => handlePresetClick(preset)}
-                  className="px-4 py-2 rounded-full bg-white border border-gray-200 shadow-sm text-sm font-medium text-gray-800 hover:bg-gray-50"
+                  className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white border border-gray-200 shadow-sm text-xs sm:text-sm font-medium text-gray-800 hover:bg-gray-50 transition-colors"
                 >
                   {preset.button_label}
                 </button>
@@ -388,38 +394,39 @@ export function ChatTab({ chatId, brandSettings, onBack, onClose }: ChatTabProps
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="border-t bg-white p-4">
+      {/* Input Area - Fixed at bottom */}
+      <div className="flex-shrink-0 border-t bg-white p-2 sm:p-4">
         <div className="flex items-center gap-2">
-          <div className="flex-1 flex items-center gap-2 bg-gray-100 rounded-full px-4 py-2">
+          <div className="flex-1 flex items-center gap-1 sm:gap-2 bg-gray-100 rounded-full px-3 sm:px-4 py-1.5 sm:py-2">
             <Input
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
               placeholder="মেসেজ..."
-              className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-sm"
+              className="flex-1 bg-transparent border-none focus:outline-none focus:ring-0 text-xs sm:text-sm h-auto py-0"
             />
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="text-gray-500 hover:text-blue-600"
+              className="text-gray-500 hover:text-blue-600 flex-shrink-0"
             >
-              <Paperclip className="w-5 h-5" />
+              <Paperclip className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
-            <button className="text-gray-500 hover:text-blue-600">
-              <ImageIcon className="w-5 h-5" />
+            <button className="text-gray-500 hover:text-blue-600 flex-shrink-0 hidden sm:block">
+              <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
-            <button className="text-gray-500 hover:text-blue-600">
-              <Smile className="w-5 h-5" />
+            <button className="text-gray-500 hover:text-blue-600 flex-shrink-0 hidden sm:block">
+              <Smile className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
 
           <button
             onClick={handleSendMessage}
             disabled={!inputValue.trim()}
-            className="w-12 h-12 rounded-full flex items-center justify-center text-white disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center text-white disabled:opacity-50 disabled:cursor-not-allowed flex-shrink-0 transition-colors"
             style={{ backgroundColor: primaryColor }}
           >
-            <Send className="w-5 h-5" />
+            <Send className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
       </div>
