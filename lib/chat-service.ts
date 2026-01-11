@@ -204,4 +204,40 @@ export const chatService = {
       supabase.removeChannel(channel);
     };
   },
+
+  // Get active agents with their avatars
+  async getActiveAgents(limit: number = 3): Promise<Array<{ id: string; avatar_url: string | null; name: string }>> {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id, avatar_url, full_name, email')
+      .eq('role', 'agent')
+      .eq('is_active', true)
+      .limit(limit);
+
+    if (error) {
+      console.error('Error fetching agents:', error);
+      return [];
+    }
+
+    return (data || []).map((agent) => ({
+      id: agent.id,
+      avatar_url: agent.avatar_url,
+      name: agent.full_name || agent.email || 'Agent',
+    }));
+  },
+
+  // Get auto-reply message for greeting
+  async getAutoReplyMessage(): Promise<string> {
+    const { data, error } = await supabase
+      .from('brand_settings')
+      .select('setting_value')
+      .eq('setting_key', 'auto_reply_message')
+      .maybeSingle();
+
+    if (error || !data) {
+      return 'ধন্যবাদ আপনার মেসেজের জন্য! আমাদের একজন প্রতিনিধি শীঘ্রই আপনার সাথে যোগাযোগ করবে।';
+    }
+
+    return data.setting_value || 'ধন্যবাদ আপনার মেসেজের জন্য! আমাদের একজন প্রতিনিধি শীঘ্রই আপনার সাথে যোগাযোগ করবে।';
+  },
 };
