@@ -57,25 +57,25 @@
       background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
     }
 
+    /* ✅ Desktop: NO outer frame */
     #chatbot-widget-iframe-wrapper {
-  position: fixed;
-  right: 24px;
-  bottom: 96px;
-  z-index: 999999;
+      position: fixed;
+      right: 24px;
+      bottom: 96px;
+      z-index: 999999;
 
-  width: 420px;
-  height: 600px;
+      width: 420px;
+      height: 600px;
+      max-width: calc(100vw - 48px);
+      max-height: calc(100vh - 140px);
 
-  max-width: calc(100vw - 48px);
-  max-height: calc(100vh - 140px);
+      border-radius: 0 !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      overflow: visible !important;
 
-  border-radius: 28px;
-  overflow: hidden;
-  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35);
-
-  display: none;
-  background: transparent;
-}
+      display: none;
+    }
 
     #chatbot-widget-iframe-wrapper.open {
       display: block;
@@ -83,26 +83,20 @@
     }
 
     @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px) scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-   #chatbot-widget-iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  border-radius: 28px;
-  background: transparent;
-  display: block;
-}
+    #chatbot-widget-iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 0 !important;
+      background: transparent !important;
+      display: block;
+    }
 
-    /* ✅ Tablet / mobile */
+    /* ✅ Tablet / mobile: wrapper is allowed */
     @media (max-width: 768px) {
       #chatbot-widget-container {
         bottom: 16px;
@@ -124,11 +118,16 @@
         bottom: 86px;
         width: calc(100vw - 24px);
         height: calc(100vh - 120px);
-        border-radius: 24px;
+
+        border-radius: 24px !important;
+        overflow: hidden !important;
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.35) !important;
+        background: transparent !important;
       }
 
       #chatbot-widget-iframe {
-        border-radius: 24px;
+        border-radius: 24px !important;
+        background: transparent !important;
       }
     }
 
@@ -139,11 +138,11 @@
         height: 100vh;
         right: 0;
         bottom: 0;
-        border-radius: 0;
+        border-radius: 0 !important;
       }
 
       #chatbot-widget-iframe {
-        border-radius: 0;
+        border-radius: 0 !important;
       }
     }
 
@@ -203,6 +202,7 @@
   iframe.id = "chatbot-widget-iframe";
   iframe.src = `${WIDGET_BASE_URL}/embed`;
   iframe.allow = "microphone; camera";
+  iframe.referrerPolicy = "no-referrer-when-downgrade";
   iframeWrapper.appendChild(iframe);
 
   button.addEventListener("click", function () {
@@ -222,7 +222,7 @@
   document.body.appendChild(container);
 
   window.addEventListener("message", function (event) {
-    if (event.data === "chatbot-close") {
+    if (event && event.data === "chatbot-close") {
       iframeWrapper.classList.remove("open");
       setButtonClosed();
     }
